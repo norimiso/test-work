@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>BPI</title>
+  <meta name="description" content="calculator for BPI(Beat Power Indication)" />
+  <meta name="keywords" content="Beatmania IIDX, Beatmania" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  },
+  CommonHTML: { matchFontHeight: false }
+});
+</script>
+<script async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+
+<body>
+  <div id="main">
+
+    <div id="header">
+
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html"><span class="logo_colour">BPI</span> (Beat Power Indicator)</a></h1>
+          <h2>Go beyond AAA.</h2>
+        </div>
+      </div>
+
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li class="selected"><a href="aboutBPI.html">About</a></li>
+          <li><a href="BPI_Table.html">BPI Table(☆12)</a></li>
+          <li><a href="AAA_BPIlist.html">AAA/MAX- BPI list(☆12)</a></li>
+          <li><a href="old_calc.html">Old calculator</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="site_content">
+
+      <div id="sidebar_container">
+
+      </div>
+
+      <div id="content">
+<a href="http://norimiso.web.fc2.com/engBPI.html">English version</a>
+<br>
+<h1>BPIについて</h1>
+<h2>概要</h2>
+<p>BPI(Beat Power Indicator)とはBeatmania IIDXというゲームの腕前(SP)を数値化した指標です。<br>
+この数値は100点満点で☆12の各曲のスコアを元に算出されます。
+100点が全一、0点が皆伝平均となるように計算式が作られています。</p>
+
+<p>☆12のそれぞれの曲のスコアより求められるものを単曲BPIとし、<br>
+☆12の曲全ての単曲BPIより算出された総合的なSPの腕前の指標が総合BPIと定義します。</p>
+<p>考案者の意図として、総合BPIが50の人と、30の人と10の人の間にある上手さの差は同じである<br>
+という風に単純に数値として比較できたらいいなというコンセプトとなっています。</p>
+
+<h2>BPIの算出方法</h2>
+<p>BPIはかなり複雑な数式を用いて算出されます。<br>
+以下に算出方法を示します。</p>
+
+<h4>[1]PGF(Pika-Great-Function)の説明</h4>
+<p>BPIを算出するにあたって不可欠なPGFという関数について説明します。<br>
+PGFとは日本語に直すとピカグレ関数です。<br>
+これは、あるスコアレートを出すためには、何ノーツに1回黄グレを出していいのかを求める関数です。<br>
+PGFは以下のように定義されます。<br>
+<br>
+${\rm PGF}(x) = X = 1 + \frac{x-0.5}{1-x}$
+</p>
+<h6>例:スコアレート90%を出すためには何ノーツに1回黄グレを出していいのかを求める方法<br>
+x = 90% = 0.9をPGFに代入します。<br>
+すると<br>
+${\rm PGF}(0.9) = 1 + \frac{0.9-0.5}{1-0.9} = 1 + 4 = 5$<br>
+より、5ノーツに1個黄グレを出せば90%になると示されました。<br>
+これを確かめます。<br>
+2000ノーツの曲の90%は、2000*2*0.9=3600です。<br>
+5ノーツに1回黄グレを出しながら2000ノーツを叩くと<br>
+PG:1600 GR:400<br>
+となります。このスコアは1600*2+400=3600<br>
+であるため、5ノーツに1回黄グレを出すと確かに90%のスコアが出せることが示されました。</h6>
+<br>
+<h4>[2]単曲BPIの求め方</h4>
+<p>単曲BPIを求める方法を示します。<br>
+単曲BPIを求めるには以下の情報が必要です。</p>
+<ul>
+<li>その曲の自分のスコア(=s)</li>
+<li>その曲の皆伝平均(=k)</li>
+<li>その曲の歴代全一(=z)</li>
+<li>その曲の理論値(=m)</li>
+</ul>
+<p>最初に、PGFに代入するために、s,k,zをmで割ることでスコアレートを求めます。<br>
+s/m = s'<br>
+k/m = k'<br>
+z/m = z'<br>
+とします。</p>
+<p>続いて、求めたそれぞれのスコアレートをPGFに代入します。<br>
+S = PGF(s')<br>
+K = PGF(k')<br>
+Z = PGF(z')<br>
+とします。
+<h6>※スコアレートが100%の場合には、例外的に、ノーツ数の倍の値をPGFは返します。</h6>
+</p>
+<p>
+ここで、SとZをKで割り、規格化します。<br>
+これより、自分のスコアが皆伝平均に比べ何倍光っているか、歴代が皆伝平均に比べ何倍光っているかを求め
+ることが出来ます。<br>
+PGFで求められるのは"何ノーツ"に1回黄グレを出すかであり、20ノーツに1回黄グレを出す人は、10ノーツに1回黄グレを出す人より、倍光らせることが出来る(=倍うまい)という考えの下、このような計算を行いました。<br>
+S'=S/K<br>
+Z'=Z/K<br>
+とします。<br>
+</p>
+<p>
+ここで単純に100*S'/Z'を行うと、皆伝平均が1点で歴代が100点となりますが、歴代があまりに高いスコアレートであった場合(例:mosaic)にあまりに厳しい点数となってしまったり、逆に歴代のスコアレートがそこまで高くない場合(ex:DIAVOLO)には、そこまで高いスコアでなくとも高い点数が出てしまい、直感と合わない問題があります。<br>
+これを抑制するために以下の様な手法を取りました。</p>
+<p><strong>・S'とK'を自然対数:lnに代入し、求めた値を1.5乗する</strong></p>
+<p>
+こうすることにより、全一のスコアレートの値によって大きく曲線の形が変わることを抑えました。<br>
+同時に、点数が高くなるに連れ、1点の重みが増していくという事情を考慮して数値化することができました。<br>
+</p>
+<h6>
+例:AAのスコアと単曲BPIの関係<br>
+BPI:スコアとします。<br>
+0点:3209<br>
+10点:3386<br>
+→10点上げるのに177点必要<br>
+<br>
+90点:3612<br>
+100点:3620<br>
+→10点上げるのに8点必要<br>
+<br>
+この様に、単曲BPIが高くなるにつれて1点上げるのに必要なスコアも小さくなります。<br>
+これは歴代スコア近傍において1点上げるということが非常に大変であることを示しています。<br>
+</h6>
+<p>
+更に、自然対数を用いることで自分のスコアが皆伝平均であればln(S'(=1))=0となることにより、皆伝平均が0点となりました。<br>
+<p>
+これより、単曲BPIは以下の式で求めることが出来ます。負の値の1.5乗は実数域では定義できないため、式が変わります。<br>
+<br>
+${\rm 単曲BPI} = 100 * \frac{ln(S')^{1.5}}{ln(Z')^{1.5}}\ \ (s\geq k)$<br>
+${\rm 単曲BPI} = -100 * \frac{-ln(S')^{1.5}}{ln(Z')^{1.5}}\ \ (s < k)$<br>
+<br>
+これにより、皆伝平均が0点、歴代が100点となるような計算式を作成することが出来ました。<br>
+</p>
+<br>
+<h4>[3]総合BPIの求め方</h4>
+<p>総合BPIは、全ての☆12の単曲BPIと以下の計算式で求められます。<br>
+この総合BPIがその人の上手さを数値として表すものとなります。</p>
+<p>総合BPIは単純な単曲BPIの平均ではありません。<br>
+他の曲が未プレイでも歴代を一つだけ持っている人を考えた際に、平均を取るとでは著しく低い値となってしまいます。<br>
+ですが、歴代を持っているという人はそれだけで非常にうまいのではないかと考えることが可能です。<br>
+また、全員が☆12を全曲埋めているとは限りません。<br>
+単純平均では未プレイの曲があった場合にそれが0とカウントされ、値が低くなってしまい<br>
+その人の本来の腕前とは離れた結果となってしまうことが考えられます。</p>
+<p>
+これらを改善するために、二乗平均平方根を応用した以下の計算式で総合BPIは算出されます。<br>
+まず、以下のように定義を行います。<br>
+n=☆12の曲数<br>
+k=累乗係数=log[2](n)<br>
+BPI_1,BPI_2,BPI_3....BPI_n:☆12の各曲の単曲BPI<br>
+<br>
+これらを用いて総合BPIの計算式を表すと、以下のようになります。<br>
+</p>
+$ \displaystyle
+{\rm 総合BPI} = \sum_{a=1}^{n} \frac{{\rm BPI}_{a}^{k}}{n}$<br>
+<br>
+<p>$k=\log_{2}n$としたことで、<br>
+<strong>1曲だけ歴代を持っていて他の曲が未プレイの人の総合BPIが50になる<br></strong>
+ようになります。(計算は省略します)<br>
+これで、☆12を全て埋めていなくとも、その人の実力をある程度表すことが可能になると考えました。<br>
+<br>
+</p>
+<p>単曲BPIが負であった場合には問題が生じるため、負であった場合には<br>
+<i>単曲BPIの絶対値をk乗し、その値にマイナスを付ける<br></i>
+という手法を取ることにしました。<br>
+しかしながら、これだと大きく皆伝平均を下回る曲があるとそれに引っ張られてしまうため、負の単曲BPIを含む総合BPIの計算を行うときには、
+<ul>
+<li><strong>単曲BPIの下限を-15とする(-15がおおよそ十段平均程度であることより)</strong></li>
+<li>そもそも負の単曲BPIを除外して計算する</li>
+<li>|単曲BPIの下限値|を全ての単曲BPIに加え計算し|単曲BPIの下限値|を引く</li>
+</ul>
+などの工夫をする必要があると思っておりますが、本来BPIはランカーさんの実力を評価するものであるため、この問題に関しては一旦放置しております。<br>
+</p></p>
+
+<br>
+
+<h4>[4]BPIを用いた全国順位の推定方法</h4>
+<p>BPIを用いることで、<br>
+単曲BPIにおいてはそのスコアが全国何位相当なのか、<br>
+総合BPIにおいては自分が全国何位相当なのか、<br>
+を荒くではありますが推定することが可能となりました。</p>
+<h5>(a)単曲BPIを用いた順位の推定方法</h5>
+<p>BPIは定義として、100点が歴代=1位、0点が皆伝平均となっています。<br>
+copula終了時の皆伝取得人数は5232人でした。これよりBPI0=2616位(皆伝取得者の半数)と定義しました。<br>
+また、100点→90点→80点→70点･･･となる毎に順位が同じだけ乗算されていくといったように定義を行いました。</p>
+<p>これらの条件を用いると、単曲BPIを用いた順位は以下のようにして推定されます。
+$単曲順位 = 2616^{\frac{100-{\rm 単曲BPI}}{100}}$<br>
+</p>
+<p>
+この式を用いると、単曲BPIと順位は以下の様な関係と推定されます。<br>
+100=1位<br>
+90=2.2位<br>
+80=4.9位<br>
+70=10.6位<br>
+60=23.3位<br>
+50=51.2位<br>
+40=112.4位<br>
+30=246.9位<br>
+20=542.2位<br>
+10=1190.9位<br>
+0=2616位(皆伝平均)<br>
+-10=5746位
+</p>
+<br>
+<h5>(b)総合BPIを用いた全国順位の推定方法</h5>
+<p>総合BPIを用いた全国順位の推定方法は、経験的に求められました。<br>
+copula終了時のDOLCE.さんのスコアを読み込み、総合BPIを算出した結果、DOLCE.さんの総合BPIは約95でした。
+ここで、DOLCE.さんが全国1位相当であるとし、同様に0点が皆伝平均である。とし、単曲BPIと同様に式を求めると以下のようになりました。
+<br>
+$総合順位 = 2616^{\frac{95-{\rm 総合BPI}}{95}}$<br>
+<br>
+この式を用いると、総合BPIと全国順位は以下のような関係と推定されます。<br>
+95=1位<br>
+90=1.6位<br>
+80=3.5位<br>
+70=8位<br>
+60=18.2位<br>
+50=41.6位<br>
+40=95.2位<br>
+30=218位<br>
+20=499.1位<br>
+10=1142.6位<br>
+0=2616位(皆伝平均)<br>
+-10=5989.5位
+</p>
+<h5>(c)補足</h5>
+<p>これらの順位推定は皆伝取得者の人数等によって変わる可能性はあります。<br>
+また、これはあくまで"推定"であることをご理解頂けたらと思います。</p>
+<br>
+<h4>[5]負のBPI</h4>
+<p>当たり前ですが、全ての人が皆伝平均を超えたスコアを出すことは出来ません。</p>
+<p>BPIは元々はIIDXのランカーさんたちの実力をうまく数値化したいと言う発想の下作成されました。<br>
+その為0点が皆伝平均であるという、ある意味厳しい指標となっております。<br>
+総合BPIの計算の際に下限を-15(だいたい十段平均)とすることを推奨しておりますが、負の領域に関しては想定とは異なる数値が出力されてしまうと考えております。<br>
+この点においてはBPIがこのような経緯で作成されたということを踏まえ、ご了承頂けたらと思います。<br>
+</p>
+<br>
+
+
+      </div>
+    </div>
+    <div id="footer">
+      <p><a href="index.html">Home</a> | <a href="aboutBPI.html">About</a> | <a href="BPI_Table.html">BPI Table(☆12)</a> | <a href="http://norimiso.web.fc2.com/temp/AAA_BPIlist.html">AAA/MAX- BPI list</a> | <a href="calc_old.html">Old calculator</a> </p> 
+      <p>Copyright © simplestyle_3 | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">HTML5 Web Templates</a></p>
+    </div>
+    <p> </p>
+  </div>
+</body>
+</html>

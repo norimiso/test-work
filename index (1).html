@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>BPI</title>
+  <meta name="description" content="calculator for BPI(Beat Power Indication)" />
+  <meta name="keywords" content="Beatmania IIDX, Beatmania" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("jquery", "1.2");</script>
+    <script type="text/javascript">
+    var musicData
+    $(function(){
+        $.getJSON("score_data.json",function(data){
+            musicData = data
+            var 
+                selObj = $("#music_name"),
+                len = data.length;
+                for (var i = 0 ; i < len ; i++){
+                    selObj.append($('<option>').html(data[i].name).val(i));
+                }
+            });
+    });
+
+            function Calc() {
+                var index = document.form1.music_name.selectedIndex;
+                var score = document.form1.exScore.value;
+                var kaiden = parseFloat(musicData[index].kaiden_average);
+                var topscore = parseFloat(musicData[index].successive);
+                var riron = parseFloat(musicData[index].MAX);
+                var notes = riron / 2;
+                var SR = parseFloat(score) / riron;
+                var KR = parseFloat(kaiden) / riron;
+                var MR = parseFloat(topscore) / riron;
+		if (score == riron){
+//			SP = 1/(1-Math.pow(2,-1/riron))
+			SP = riron;
+		} else {
+                var SP = 1 / (1 - SR);
+		}
+                var KP = 1 / (1 - KR);
+                var MP = 1 / (1 - MR);
+                if (SP >= KP){
+                	BPI = 100 * Math.pow(Math.log(SP/KP),1.5) / Math.pow(Math.log(MP/KP),1.5);
+				} else {
+					BPI = - 100 * Math.pow(-Math.log(SP/KP),1.5) / Math.pow(Math.log(MP/KP),1.5);
+                }
+                document.form1.txtE.value = Math.round(BPI*1000)/1000;
+                document.form1.txtF.value = Math.log(Math.pow(SP/KP,1.5));
+                document.form1.txtG.value = Math.log(Math.pow(MP/KP,1.5));
+                document.form1.txtH.value = Math.log(Math.pow(KP/KP,1.5));
+            }
+        </script>
+</head>
+
+<body>
+  <div id="main">
+
+    <div id="header">
+
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html"><span class="logo_colour">BPI</span> (Beat Power Indicator)</a></h1>
+          <h2>Go beyond AAA.</h2>
+        </div>
+      </div>
+
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li class="selected"><a href="index.html">Home</a></li>
+          <li><a href="aboutBPI.html">About</a></li>
+          <li><a href="BPI_Table.html">BPI Table(☆12)</a></li>
+          <li><a href="AAA_BPIlist.html">AAA/MAX- BPI list(☆12)</a></li>
+          <li><a href="old_calc.html">Old calculator</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="site_content">
+
+      <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <!-- insert your sidebar items here -->
+            <h5>2016/12/14</h5>
+            <p>Renewed design. </p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+
+<!--
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="#">link 1</a></li>
+              <li><a href="#">link 2</a></li>
+              <li><a href="#">link 3</a></li>
+              <li><a href="#">link 4</a></li>
+            </ul>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+-->
+
+      </div>
+
+      <div id="content">
+      <h1><strong><a href="https://twitter.com/zubububu"> ZUBUさん</a>にBPICLを作っていただきました！！ --> <a href="https://twitter.com/bpicl_iidx">BPICL</a></strong></h1>
+      <p> BPIとは、あなたのBeatmania IIDXの腕前を数値化する指標です。</p>
+      <p> 詳しくはAboutへ。</p>
+      <h5>BPI(Beat Power Indicator) is an indicator that how you are good on Beatmania IIDX.</h5>
+      <h5> Detail is shown in About. </h5>
+      <br>
+
+<!-- test -->
+<form name="form1">
+<select id="music_name" name="曲名" >
+</select><br>
+<script type="text/javascript">
+$('#music_name').change(function(){
+ 　 var index = document.form1.music_name.selectedIndex;
+
+    var xkavg=document.getElementById("kavg");
+    xkavg.innerHTML="Kaiden-Avg:" + musicData[index].kaiden_average;
+    var xSR=document.getElementById("SR");
+    xSR.innerHTML="Server Record(copula):" + musicData[index].successive;
+    var xtop=document.getElementById("MAX");
+    xtop.innerHTML="MAX:" + musicData[index].MAX;
+  
+
+});
+</script>
+<ul id="score_data">
+<li id="kavg">Kaiden-Avg:</li>
+<li id="SR">Server Record(copula):</li>
+<li id="MAX">MAX:</li>
+<li></li>
+</ul>
+            Your Score(EX SCORE)<br>
+	<INPUT TYPE="tel" NAME="exScore"> <br>
+            <br>
+            <input type="button" name="cmdCalc" value="Calculate" onclick="Calc()"><br><br>
+            BPI<br>
+	 <INPUT TYPE="number" NAME="txtE"> <br>
+<!--
+	<br>
+<br>
+<br>
+
+            debug<br>
+            SP<br>
+	 <INPUT TYPE="text" NAME="txtF"> <br>
+            MP<br>
+	 <INPUT TYPE="text" NAME="txtG"> <br>
+            KP<br>
+	 <INPUT TYPE="text" NAME="txtH"> <br>
+-->
+        </form>
+      </div>
+    </div>
+    <div id="footer">
+      <p><a href="index.html">Home</a> | <a href="aboutBPI.html">About</a> | <a href="BPI_Table.html">BPI Table(☆12)</a> | <a href="http://norimiso.web.fc2.com/temp/AAA_BPIlist.html">AAA/MAX- BPI list</a> | <a href="calc_old.html">Old calculator</a> </p> 
+      <p>Copyright © simplestyle_3 | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">HTML5 Web Templates</a></p>
+    </div>
+    <p> </p>
+  </div>
+</body>
+</html>
